@@ -126,13 +126,26 @@ class SpaceMouse(Device):
     ):
         super().__init__(env)
 
-        print("Opening SpaceMouse device")
-        self.vendor_id = vendor_id
-        self.product_id = product_id
+        for device in hid.enumerate():
+            if (
+                    device["product_string"] == "SpaceMouse Compact"
+                    or device["product_string"] == "SpaceMouse Wireless"
+                    or device["product_string"] == "SpaceMouse Wireless BT"
+                    or device["product_string"] == "SpaceMouse"
+            ):
+                self.vendor_id = device["vendor_id"]
+                self.product_id = device["product_id"]
+                print(self.vendor_id, self.product_id)
+                # connect to the device
+                print("Opening Founded SpaceMouse device")
+                break
+        # self.vendor_id = vendor_id
+        # self.product_id = product_id
         self.device = hid.device()
         try:
             self.device.open(self.vendor_id, self.product_id)  # SpaceMouse
         except OSError as e:
+            print(e)
             ROBOSUITE_DEFAULT_LOGGER.warning(
                 "Failed to open SpaceMouse device"
                 "Consider killing other processes that may be using the device such as 3DconnexionHelper (killall 3DconnexionHelper)"
@@ -152,6 +165,13 @@ class SpaceMouse(Device):
         self._display_controls()
 
         self.single_click_and_hold = False
+
+        # --- Gripper State Switch ---
+        self.toggle_gripper_mode = True     # False: Long Press Mode, True: Toggle Mode
+        self.gripper_closed = False         # Current toggle state
+        self._last_left_button = 0
+        self._last_click_time = 0
+        self._double_click_threshold = 0.3  # Double cLick interval (second)
 
         self._control = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         self._reset_state = 0
@@ -295,22 +315,34 @@ class SpaceMouse(Device):
                         ]
 
                 if d[0] == 3:  ## readings from the side buttons
-
-                    # press left button
-                    if d[1] == 1:
-                        t_click = time.time()
-                        elapsed_time = t_click - t_last_click
-                        t_last_click = t_click
-                        self.single_click_and_hold = True
-
-                    # release left button
-                    if d[1] == 0:
-                        self.single_click_and_hold = False
+                    left_button = d[1] == 1
+                    if left_button and not self._last_left_button:
+                        now = time.time()
+                        if now - self._last_click_time < self._double_click_threshold:
+                            # Double Click to switch mode
+                            self.toggle_gripper_mode = not self.toggle_gripper_mode
+                            print(f"Gripper mode toggled to: {'TOGGLE' if self.toggle_gripper_mode else 'HOLD'}")
+                            if self.toggle_gripper_mode:
+                                self.gripper_closed = False  # 进入切换模式时默认夹爪打开
+                            self._last_click_time = 0  # 重置，避免三连击被判为两次双击
+                            self._last_left_button = left_button
+                            continue
+                        else:
+                            self._last_click_time = now
+                    if self.toggle_gripper_mode:
+                        # Toggle Mode
+                        if left_button and not self._last_left_button:
+                            self.gripper_closed = not self.gripper_closed
+                    else:
+                        # Long Press Mode
+                        self.gripper_closed = left_button
+                    self._last_left_button = left_button
 
                     # right button is for reset
                     if d[1] == 2:
                         self._reset_state = 1
                         self._enabled = False
+                        self.gripper_closed = False
                         self._reset_internal_state()
 
     @property
@@ -329,11 +361,9 @@ class SpaceMouse(Device):
         Maps internal states into gripper commands.
 
         Returns:
-            float: Whether we're using single click and hold or not
+            float: Whether gripper is closed (1.0) or open (0.0)
         """
-        if self.single_click_and_hold:
-            return 1.0
-        return 0
+        return 1.0 if self.gripper_closed else 0.0
 
     def on_press(self, key):
         """

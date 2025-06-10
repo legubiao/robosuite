@@ -28,6 +28,55 @@ class PandaOmron(Panda):
             "table": lambda table_length: (-0.16 - table_length / 2, 0, 0),
         }
 
+class DobotCR5Omron(DobotCR5):
+    @property
+    def default_base(self):
+        return "OmronMobileBase"
+
+    @property
+    def default_arms(self):
+        return {"right": "DobotCR5"}
+
+    @property
+    def init_qpos(self):
+        # return np.array([0.0, 0.618, -2.118, -0.051, 1.714, np.pi / 2])
+        return np.array([1.57, -0.425, 2.551, -0.628, -1.57, np.pi / 2])
+        # return np.array([3.14, 0.492, 1.901, -0.764, -1.57, -np.pi / 2])
+    @property
+    def init_torso_qpos(self):
+        return np.array([0.2])
+
+    @property
+    def base_xpos_offset(self):
+        return {
+            "bins": (-0.6, -0.1, 0),
+            "empty": (-0.6, 0, 0),
+            "table": lambda table_length: (-0.16 - table_length / 2, 0, 0),
+        }
+
+class UR5eOmron(UR5e):
+    @property
+    def default_base(self):
+        return "OmronMobileBase"
+
+    @property
+    def default_arms(self):
+        return {"right": "UR5e"}
+
+    @property
+    def init_qpos(self):
+        return np.array([-0.470, -1.735, 2.480, -2.275, -1.590, -1.991])
+    @property
+    def init_torso_qpos(self):
+        return np.array([0.2])
+
+    @property
+    def base_xpos_offset(self):
+        return {
+            "bins": (-0.6, -0.1, 0),
+            "empty": (-0.6, 0, 0),
+            "table": lambda table_length: (-0.16 - table_length / 2, 0, 0),
+        }
 
 class SpotWithArm(SpotArm):
     @property
