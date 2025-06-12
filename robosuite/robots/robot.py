@@ -52,16 +52,16 @@ class Robot(object):
     """
 
     def __init__(
-        self,
-        robot_type: str,
-        idn=0,
-        composite_controller_config=None,
-        initial_qpos=None,
-        initialization_noise=None,
-        base_type="default",
-        gripper_type="default",
-        control_freq=20,
-        lite_physics=True,
+            self,
+            robot_type: str,
+            idn=0,
+            composite_controller_config=None,
+            initial_qpos=None,
+            initialization_noise=None,
+            base_type="default",
+            gripper_type="default",
+            control_freq=20,
+            lite_physics=True,
     ):
         self.arms = REGISTERED_ROBOTS[robot_type].arms
 
@@ -465,7 +465,6 @@ class Robot(object):
 
         # add in gripper sensors if this robot has a gripper
         if self.has_gripper[arm]:
-
             @sensor(modality=modality)
             def gripper_qpos(obs_cache):
                 return np.array([self.sim.data.qpos[x] for x in self._ref_gripper_joint_pos_indexes[arm]])
@@ -511,7 +510,7 @@ class Robot(object):
         """
         tolerance = 0.1
         for qidx, (q, q_limits) in enumerate(
-            zip(self.sim.data.qpos[self._ref_joint_pos_indexes], self.sim.model.jnt_range[self._ref_joint_indexes])
+                zip(self.sim.data.qpos[self._ref_joint_pos_indexes], self.sim.model.jnt_range[self._ref_joint_indexes])
         ):
             if q_limits[0] != q_limits[1] and not (q_limits[0] + tolerance < q < q_limits[1] - tolerance):
                 ROBOSUITE_DEFAULT_LOGGER.warning("Joint limit reached in joint " + str(qidx))
@@ -692,7 +691,7 @@ class Robot(object):
         """
         sensor_idx = np.sum(self.sim.model.sensor_dim[: self.sim.model.sensor_name2id(sensor_name)])
         sensor_dim = self.sim.model.sensor_dim[self.sim.model.sensor_name2id(sensor_name)]
-        return np.array(self.sim.data.sensordata[sensor_idx : sensor_idx + sensor_dim])
+        return np.array(self.sim.data.sensordata[sensor_idx: sensor_idx + sensor_dim])
 
     def visualize(self, vis_settings):
         """
@@ -860,7 +859,7 @@ class Robot(object):
             #             NOTE: "type" must be one of: {JOINT_POSITION, JOINT_TORQUE, JOINT_VELOCITY,
             #                                           OSC_POSITION, OSC_POSE, IK_POSE}
             assert (
-                type(self.part_controller_config[arm]) == dict
+                    type(self.part_controller_config[arm]) == dict
             ), "Inputted controller config must be a dict! Instead, got type: {}".format(
                 type(self.part_controller_config[arm])
             )

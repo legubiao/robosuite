@@ -32,6 +32,7 @@ class Device(metaclass=abc.ABCMeta):
         self.active_arm_indices = [0] * len(self.all_robot_arms)
         self.active_robot = 0
         self.base_modes = [False] * len(self.all_robot_arms)
+        self.torso_modes = [False] * len(self.all_robot_arms)
 
         self._prev_target = {arm: None for arm in self.all_robot_arms[self.active_robot]}
 
@@ -50,6 +51,10 @@ class Device(metaclass=abc.ABCMeta):
     @property
     def base_mode(self):
         return self.base_modes[self.active_robot]
+
+    @property
+    def torso_mode(self):
+        return self.torso_modes[self.active_robot]
 
     @active_arm_index.setter
     def active_arm_index(self, value):
@@ -141,18 +146,24 @@ class Device(metaclass=abc.ABCMeta):
 
         if robot.is_mobile:
             base_mode = bool(state["base_mode"])
+            torso_mode = bool(state["torso_mode"])
             if base_mode is True:
                 arm_norm_delta = np.zeros(6)
                 base_ac = np.array([dpos[0], dpos[1], drotation[2]])
-                torso_ac = np.array([dpos[2]])
+                # In base mode, torso is locked by default unless torso_mode is True
+                if torso_mode is True:
+                    torso_ac = np.array([dpos[2]])
+                else:
+                    torso_ac = np.zeros(1)
             else:
                 arm_norm_delta = np.concatenate([dpos, drotation])
                 base_ac = np.zeros(3)
                 torso_ac = np.zeros(1)
 
             ac_dict["base"] = base_ac
-            # ac_dict["torso"] = torso_ac
+            ac_dict["torso"] = torso_ac
             ac_dict["base_mode"] = np.array([1 if base_mode is True else -1])
+            ac_dict["torso_mode"] = np.array([1 if torso_mode is True else -1])
         else:
             arm_norm_delta = np.concatenate([dpos, drotation])
 

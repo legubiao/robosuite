@@ -126,6 +126,10 @@ def choose_robots(exclude_bimanual=False, use_humanoids=False, exclude_single_ar
         robots.add("Baxter")
         robots.add("GR1ArmsOnly")
         robots.add("Tiago")
+        robots.add("ArxR5Dual")
+        robots.add("ArxLift")
+        robots.add("Aloha")
+        robots.add("MobileAloha")
     if use_humanoids:
         robots.add("GR1ArmsOnly")
 

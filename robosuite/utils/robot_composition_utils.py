@@ -10,6 +10,7 @@ BASE_TARGET_MAPPING = {
     "RethinkMinimalMount": "FixedBaseRobot",
     "NullMount": "FixedBaseRobot",
     "OmronMobileBase": "WheeledRobot",
+    "ArxLiftBase": "WheeledRobot",
     "NullMobileBase": "WheeledRobot",
     "NoActuationBase": "LeggedRobot",
     "Spot": "LeggedRobot",

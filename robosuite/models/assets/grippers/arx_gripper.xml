@@ -46,7 +46,7 @@
   </actuator>
   <worldbody>
     <body name="right_gripper" pos="0 0 0" quat="0 0.7071 0 0.7071">
-      <inertial pos="0.041697 2.4368e-05 0.00014464" quat="0.5 0.5 -0.5 0.5" mass="0.44089"
+      <inertial pos="0.041697 2.4368e-05 0.00014464" quat="0.5 0.5 -0.5 0.5" mass="0.34089"
                 diaginertia="0.0005 0.00038 0.00028"/>
       <site name="ft_frame" pos="0 0 0" size="0.01 0.01 0.01" rgba="1 0 0 1" type="sphere" class="visual"/>
       <geom material="black_metal" mesh="link6" class="visual"/>
@@ -70,8 +70,10 @@
               class="visual"/>
         <site name="ee_z" pos="0 0 0.1" size="0.005 .1" quat="1 0 0 0" rgba="0 0 1 0" type="cylinder" class="visual"/>
         <!-- This site was added for visualization. -->
-        <site name="grip_site_cylinder" pos="0 0 0" size="0.005 10" rgba="0 1 0 0.3" quat="0 0.7071 0 0.7071"
-              type="cylinder" class="visual"/>
+        <body name="line_front" pos="5 0 0">
+            <site name="grip_site_cylinder" pos="0 0 0" size="0.005 5" rgba="0 1 0 0.3" quat="0 0.7071 0 0.7071"
+                  type="cylinder" class="visual"/>
+        </body>
       </body>
 
       <body name="link7" pos="0.08657 0.024896 -0.0002436">

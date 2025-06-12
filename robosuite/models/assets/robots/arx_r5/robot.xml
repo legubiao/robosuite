@@ -83,7 +83,9 @@
   <worldbody>
     <body name="base" pos="0 0 0">
       <camera mode="fixed" name="robotview" pos="1.0 0 0.4" quat="0.653 0.271 0.271 0.653"/>
+      <inertial diaginertia="0 0 0" mass="0" pos="0 0 0"/>
       <body name="base_link" pos="0 0 0">
+        <inertial diaginertia="0.00019 0.00019 0.00020" mass="0.42272" pos="-0.00013359 6.672E-05 0.031672"/>
         <site name="right_center" pos="0 0 0" size="0.01" rgba="1 0.3 0.3 1" group="2"/>
         <geom material="black_metal" mesh="base_link" class="visual"/>
         <geom mesh="base_link_collision_0" rgba="0.6210706651327209 0.9584934397295742 0.6502693095076579 1"
@@ -177,8 +179,10 @@
                         class="collision"/>
                   <body name="link6" pos="0.025286 0 0.083391" quat="-3.67321e-06 1 0 0">
                     <joint name="joint6" pos="0 0 0" axis="1 0 0" range="-1.57 1.57" actuatorfrcrange="-100 100"/>
+                    <inertial pos="0.041697 2.4368e-05 0.00014464" quat="0.5 0.5 -0.5 0.5" mass="0.10089"
+                              diaginertia="0.0005 0.00038 0.00028"/>
                     <body name="right_hand" pos="0.0 0.0 0.0" quat="0 0.7071 0 0.7071">
-                      <camera mode="fixed" name="right_eye_in_hand" pos="0.05 0 0" quat="0.5 0.5 -0.5 -0.5" fovy="75"/>
+                      <camera mode="fixed" name="eye_in_hand" pos="0.06 0 0.05" quat="0 0.707108 0.707108 0" fovy="75"/>
                     </body>
                   </body>
                 </body>

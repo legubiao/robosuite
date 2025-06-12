@@ -103,6 +103,7 @@ class Keyboard(Device):
             grasp=int(self.grasp),
             reset=self._reset_state,
             base_mode=int(self.base_mode),
+            torso_mode=int(self.torso_mode),
         )
 
     def on_press(self, key):

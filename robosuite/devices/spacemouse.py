@@ -208,6 +208,7 @@ class SpaceMouse(Device):
         print_command("Twist mouse about an axis", "rotate arm about a corresponding axis")
         print_command("Control+C", "quit")
         print_command("b", "toggle arm/base mode (if applicable)")
+        print_command("h", "toggle torso mode (if applicable)")
         print_command("s", "switch active arm (if multi-armed robot)")
         print_command("=", "switch active robot (if multi-robot environment)")
         print("")
@@ -260,6 +261,7 @@ class SpaceMouse(Device):
             grasp=self.control_gripper,
             reset=self._reset_state,
             base_mode=int(self.base_mode),
+            torso_mode=int(self.torso_mode),
         )
 
     def run(self):
@@ -383,6 +385,17 @@ class SpaceMouse(Device):
             # controls for mobile base (only applicable if mobile base present)
             if key.char == "b":
                 self.base_modes[self.active_robot] = not self.base_modes[self.active_robot]  # toggle mobile base
+                if self.base_modes[self.active_robot]:
+                    print("Entering base mode - controlling robot base")
+                    print(f"Torso is {'locked' if not self.torso_modes[self.active_robot] else 'unlocked'}")
+                else:
+                    print("Exiting base mode - controlling robot arm")
+            elif key.char == "h":
+                self.torso_modes[self.active_robot] = not self.torso_modes[self.active_robot]  # toggle torso mode
+                if self.torso_modes[self.active_robot]:
+                    print("Entering torso mode - controlling robot torso")
+                else:
+                    print("Exiting torso mode - lock torso")
             elif key.char == "s":
                 self.active_arm_index = (self.active_arm_index + 1) % len(self.all_robot_arms[self.active_robot])
             elif key.char == "=":

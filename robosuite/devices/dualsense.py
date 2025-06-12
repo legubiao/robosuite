@@ -470,6 +470,7 @@ class DualSense(Device):
             grasp=self.control_gripper,
             reset=self._reset_state,
             base_mode=int(self.base_mode),
+            torso_mode=int(self.torso_mode),
         )
 
     def _postprocess_device_outputs(self, dpos, drotation):
