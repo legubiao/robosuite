@@ -1,0 +1,39 @@
+<mujoco model="lift">
+  <default>
+    <default class="visual">
+      <geom group="2" type="mesh" contype="0" conaffinity="0"/>
+    </default>
+    <default class="collision">
+      <geom group="3" type="mesh"/>
+    </default>
+  </default>
+  <asset>
+    <material name="grey_metal.004" specular="0.5" shininess="0.09604875199999999" rgba="0.081647 0.081647 0.081647 1.000000"/>
+    <mesh file="lift.obj"/>
+    <mesh file="lift_collision_0.obj"/>
+    <mesh file="lift_collision_1.obj"/>
+    <mesh file="lift_collision_2.obj"/>
+    <mesh file="lift_collision_3.obj"/>
+    <mesh file="lift_collision_4.obj"/>
+    <mesh file="lift_collision_5.obj"/>
+    <mesh file="lift_collision_6.obj"/>
+    <mesh file="lift_collision_7.obj"/>
+    <mesh file="lift_collision_8.obj"/>
+    <mesh file="lift_collision_9.obj"/>
+  </asset>
+  <worldbody>
+    <body name="lift">
+      <geom material="grey_metal.004" mesh="lift" class="visual"/>
+      <geom mesh="lift_collision_0" rgba="0.1254176678304858 0.7771270411400798 0.22176947898623878 1" class="collision"/>
+      <geom mesh="lift_collision_1" rgba="0.8457331866539163 0.7734474755024454 0.1954201782685171 1" class="collision"/>
+      <geom mesh="lift_collision_2" rgba="0.9127173836856357 0.08747770946841937 0.6373041274331906 1" class="collision"/>
+      <geom mesh="lift_collision_3" rgba="0.6677500613926561 0.5102774721634665 0.47749348394214863 1" class="collision"/>
+      <geom mesh="lift_collision_4" rgba="0.0457171370885352 0.8842993178839073 0.678318919220584 1" class="collision"/>
+      <geom mesh="lift_collision_5" rgba="0.4494563852837845 0.4796637189270284 0.09123061722506576 1" class="collision"/>
+      <geom mesh="lift_collision_6" rgba="0.04504740885802416 0.4772621892477291 0.2645212073491455 1" class="collision"/>
+      <geom mesh="lift_collision_7" rgba="0.887404381819572 0.3068949512579512 0.3817263256847002 1" class="collision"/>
+      <geom mesh="lift_collision_8" rgba="0.1461396464394612 0.8726288613130383 0.31519317252932344 1" class="collision"/>
+      <geom mesh="lift_collision_9" rgba="0.022697694249409706 0.06850939211576068 0.11438342013314828 1" class="collision"/>
+    </body>
+  </worldbody>
+</mujoco>

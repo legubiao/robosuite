@@ -1,0 +1,39 @@
+<mujoco model="left_elbow">
+  <default>
+    <default class="visual">
+      <geom group="2" type="mesh" contype="0" conaffinity="0"/>
+    </default>
+    <default class="collision">
+      <geom group="3" type="mesh"/>
+    </default>
+  </default>
+  <asset>
+    <material name="black_metal.013" specular="0.5" shininess="0.09604875199999999" rgba="0.030034 0.030034 0.030034 1.000000"/>
+    <mesh file="left_elbow.obj"/>
+    <mesh file="left_elbow_collision_0.obj"/>
+    <mesh file="left_elbow_collision_1.obj"/>
+    <mesh file="left_elbow_collision_2.obj"/>
+    <mesh file="left_elbow_collision_3.obj"/>
+    <mesh file="left_elbow_collision_4.obj"/>
+    <mesh file="left_elbow_collision_5.obj"/>
+    <mesh file="left_elbow_collision_6.obj"/>
+    <mesh file="left_elbow_collision_7.obj"/>
+    <mesh file="left_elbow_collision_8.obj"/>
+    <mesh file="left_elbow_collision_9.obj"/>
+  </asset>
+  <worldbody>
+    <body name="left_elbow">
+      <geom material="black_metal.013" mesh="left_elbow" class="visual"/>
+      <geom mesh="left_elbow_collision_0" rgba="0.4254829678593006 0.7490363576976541 0.04496633136486439 1" class="collision"/>
+      <geom mesh="left_elbow_collision_1" rgba="0.1884369763081486 0.6317129409282993 0.9027788976344936 1" class="collision"/>
+      <geom mesh="left_elbow_collision_2" rgba="0.4963905568818243 0.8832883237495895 0.14594515913482853 1" class="collision"/>
+      <geom mesh="left_elbow_collision_3" rgba="0.10406666437613654 0.12143708644314599 0.35101052358654405 1" class="collision"/>
+      <geom mesh="left_elbow_collision_4" rgba="0.27203993947843785 0.6684721206389063 0.7462367639724639 1" class="collision"/>
+      <geom mesh="left_elbow_collision_5" rgba="0.15851645198379194 0.6243807337600958 0.39798985650770125 1" class="collision"/>
+      <geom mesh="left_elbow_collision_6" rgba="0.7126452042180814 0.6698808439898883 0.06462776193894437 1" class="collision"/>
+      <geom mesh="left_elbow_collision_7" rgba="0.3103158305055398 0.8828346545604064 0.34900106261466235 1" class="collision"/>
+      <geom mesh="left_elbow_collision_8" rgba="0.2531058748514051 0.4275207080188431 0.5648829058525094 1" class="collision"/>
+      <geom mesh="left_elbow_collision_9" rgba="0.9655050253566209 0.491286500416264 0.28625109714868147 1" class="collision"/>
+    </body>
+  </worldbody>
+</mujoco>

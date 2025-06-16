@@ -78,3 +78,86 @@ class ArxGripper(ArxGripperBase):
     @property
     def dof(self):
         return 1
+
+
+class ArxX7GripperBase(GripperModel):
+    """
+    Gripper for ARX R5's gripper (has two fingers).
+
+    Args:
+        idn (int or str): Number or some other unique identification string for this gripper instance
+    """
+
+    def __init__(self, idn=0):
+        super().__init__(xml_path_completion("grippers/arx_x7_gripper.xml"), idn=idn)
+
+    def format_action(self, action):
+        return action
+
+    @property
+    def init_qpos(self):
+        return np.array([0.0042,0.0042])
+
+    @property
+    def _important_geoms(self):
+        return {
+            "left_finger": [
+                "gripper_left_collision_0",
+                "gripper_left_collision_1",
+                "gripper_left_collision_2",
+                "gripper_left_collision_3",
+                "gripper_left_collision_4",
+                "gripper_left_collision_5",
+                "gripper_left_collision_6",
+                "gripper_left_collision_7",
+                "gripper_left_collision_8",
+                "gripper_left_collision_9",
+                "finger1_pad_collision",
+            ],
+            "right_finger": [
+                "gripper_right_collision_0",
+                "gripper_right_collision_1",
+                "gripper_right_collision_2",
+                "gripper_right_collision_3",
+                "gripper_right_collision_4",
+                "gripper_right_collision_5",
+                "gripper_right_collision_6",
+                "gripper_right_collision_7",
+                "gripper_right_collision_8",
+                "gripper_right_collision_9",
+                "finger2_pad_collision",
+            ],
+            "left_fingerpad": ["finger1_pad_collision"],
+            "right_fingerpad": ["finger2_pad_collision"],
+        }
+
+
+class ArxX7Gripper(ArxX7GripperBase):
+    """
+    Modifies ArxGripperBase to only take one action.
+    """
+
+    def format_action(self, action):
+        """
+        Maps continuous action into binary output
+        -1 => open, 1 => closed
+
+        Args:
+            action (np.array): gripper-specific action
+
+        Raises:
+            AssertionError: [Invalid action dimension size]
+        """
+        assert len(action) == self.dof
+        self.current_action = np.clip(
+            self.current_action + np.array([-1.0, -1.0]) * self.speed * np.sign(action), -1.0, 1.0
+        )
+        return self.current_action
+
+    @property
+    def speed(self):
+        return 0.2
+
+    @property
+    def dof(self):
+        return 1

@@ -1,0 +1,39 @@
+<mujoco model="right_mount">
+  <default>
+    <default class="visual">
+      <geom group="2" type="mesh" contype="0" conaffinity="0"/>
+    </default>
+    <default class="collision">
+      <geom group="3" type="mesh"/>
+    </default>
+  </default>
+  <asset>
+    <material name="black_metal.001" specular="0.5" shininess="0.09604875199999999" rgba="0.030034 0.030034 0.030034 1.000000"/>
+    <mesh file="right_mount.obj"/>
+    <mesh file="right_mount_collision_0.obj"/>
+    <mesh file="right_mount_collision_1.obj"/>
+    <mesh file="right_mount_collision_2.obj"/>
+    <mesh file="right_mount_collision_3.obj"/>
+    <mesh file="right_mount_collision_4.obj"/>
+    <mesh file="right_mount_collision_5.obj"/>
+    <mesh file="right_mount_collision_6.obj"/>
+    <mesh file="right_mount_collision_7.obj"/>
+    <mesh file="right_mount_collision_8.obj"/>
+    <mesh file="right_mount_collision_9.obj"/>
+  </asset>
+  <worldbody>
+    <body name="right_mount">
+      <geom material="black_metal.001" mesh="right_mount" class="visual"/>
+      <geom mesh="right_mount_collision_0" rgba="0.262720935872679 0.012063082895204413 0.4663451294867589 1" class="collision"/>
+      <geom mesh="right_mount_collision_1" rgba="0.492434750560633 0.19903102638476144 0.162511665732463 1" class="collision"/>
+      <geom mesh="right_mount_collision_2" rgba="0.6614417578078188 0.9134762252916104 0.8125970439452319 1" class="collision"/>
+      <geom mesh="right_mount_collision_3" rgba="0.12267593047703096 0.5501438352003574 0.2280875320946294 1" class="collision"/>
+      <geom mesh="right_mount_collision_4" rgba="0.38678998845488244 0.5955900845269215 0.43869844950695147 1" class="collision"/>
+      <geom mesh="right_mount_collision_5" rgba="0.6582753465822013 0.0033993742525659787 0.10499929448559175 1" class="collision"/>
+      <geom mesh="right_mount_collision_6" rgba="0.5996091288702274 0.8916712282916087 0.5194291747940137 1" class="collision"/>
+      <geom mesh="right_mount_collision_7" rgba="0.15664783170264862 0.040378527460355196 0.5578770215529165 1" class="collision"/>
+      <geom mesh="right_mount_collision_8" rgba="0.3134886082749009 0.3236460136242282 0.9756447225028299 1" class="collision"/>
+      <geom mesh="right_mount_collision_9" rgba="0.8144577746808173 0.6690553752663582 0.30968662729927376 1" class="collision"/>
+    </body>
+  </worldbody>
+</mujoco>

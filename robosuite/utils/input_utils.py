@@ -128,6 +128,8 @@ def choose_robots(exclude_bimanual=False, use_humanoids=False, exclude_single_ar
         robots.add("Tiago")
         robots.add("ArxR5Dual")
         robots.add("ArxLift")
+        robots.add("ArxX7S")
+        robots.add("ArxX7sArms")
         robots.add("Aloha")
         robots.add("MobileAloha")
     if use_humanoids:

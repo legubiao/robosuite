@@ -1,0 +1,39 @@
+<mujoco model="gripper_right">
+  <default>
+    <default class="visual">
+      <geom group="2" type="mesh" contype="0" conaffinity="0"/>
+    </default>
+    <default class="collision">
+      <geom group="3" type="mesh"/>
+    </default>
+  </default>
+  <asset>
+    <material name="grey_metal.003" specular="0.5" shininess="0.09604875199999999" rgba="0.081647 0.081647 0.081647 1.000000"/>
+    <mesh file="gripper_right.obj"/>
+    <mesh file="gripper_right_collision_0.obj"/>
+    <mesh file="gripper_right_collision_1.obj"/>
+    <mesh file="gripper_right_collision_2.obj"/>
+    <mesh file="gripper_right_collision_3.obj"/>
+    <mesh file="gripper_right_collision_4.obj"/>
+    <mesh file="gripper_right_collision_5.obj"/>
+    <mesh file="gripper_right_collision_6.obj"/>
+    <mesh file="gripper_right_collision_7.obj"/>
+    <mesh file="gripper_right_collision_8.obj"/>
+    <mesh file="gripper_right_collision_9.obj"/>
+  </asset>
+  <worldbody>
+    <body name="gripper_right">
+      <geom material="grey_metal.003" mesh="gripper_right" class="visual"/>
+      <geom mesh="gripper_right_collision_0" rgba="0.9576875801972524 0.242680120932935 0.2858686192735179 1" class="collision"/>
+      <geom mesh="gripper_right_collision_1" rgba="0.20634090614194966 0.5751021357169948 0.8457463431728296 1" class="collision"/>
+      <geom mesh="gripper_right_collision_2" rgba="0.8204572328366698 0.016073368269124977 0.26934661497878565 1" class="collision"/>
+      <geom mesh="gripper_right_collision_3" rgba="0.28236386394798596 0.5029081327455216 0.9538914441711666 1" class="collision"/>
+      <geom mesh="gripper_right_collision_4" rgba="0.6654942333770845 0.5003501672650256 0.6559262170414845 1" class="collision"/>
+      <geom mesh="gripper_right_collision_5" rgba="0.7347459436348963 0.8058276503785828 0.41900625892261756 1" class="collision"/>
+      <geom mesh="gripper_right_collision_6" rgba="0.5713957931081082 0.07998340803121495 0.4485012664919684 1" class="collision"/>
+      <geom mesh="gripper_right_collision_7" rgba="0.4964806765149582 0.5848248193869579 0.5686846362558305 1" class="collision"/>
+      <geom mesh="gripper_right_collision_8" rgba="0.3213668492167858 0.6106955056718918 0.024287169940366504 1" class="collision"/>
+      <geom mesh="gripper_right_collision_9" rgba="0.12486794081812036 0.31360770516729064 0.39982327611766977 1" class="collision"/>
+    </body>
+  </worldbody>
+</mujoco>

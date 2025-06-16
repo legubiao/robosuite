@@ -1,0 +1,39 @@
+<mujoco model="right_wrist">
+  <default>
+    <default class="visual">
+      <geom group="2" type="mesh" contype="0" conaffinity="0"/>
+    </default>
+    <default class="collision">
+      <geom group="3" type="mesh"/>
+    </default>
+  </default>
+  <asset>
+    <material name="grey_metal.005" specular="0.5" shininess="0.09604875199999999" rgba="0.081647 0.081647 0.081647 1.000000"/>
+    <mesh file="right_wrist.obj"/>
+    <mesh file="right_wrist_collision_0.obj"/>
+    <mesh file="right_wrist_collision_1.obj"/>
+    <mesh file="right_wrist_collision_2.obj"/>
+    <mesh file="right_wrist_collision_3.obj"/>
+    <mesh file="right_wrist_collision_4.obj"/>
+    <mesh file="right_wrist_collision_5.obj"/>
+    <mesh file="right_wrist_collision_6.obj"/>
+    <mesh file="right_wrist_collision_7.obj"/>
+    <mesh file="right_wrist_collision_8.obj"/>
+    <mesh file="right_wrist_collision_9.obj"/>
+  </asset>
+  <worldbody>
+    <body name="right_wrist">
+      <geom material="grey_metal.005" mesh="right_wrist" class="visual"/>
+      <geom mesh="right_wrist_collision_0" rgba="0.28457080100114407 0.5194618250825882 0.41066741777923754 1" class="collision"/>
+      <geom mesh="right_wrist_collision_1" rgba="0.7648429773021065 0.5141846773523898 0.8703770505915825 1" class="collision"/>
+      <geom mesh="right_wrist_collision_2" rgba="0.6085585095225811 0.8913036812966086 0.8763701762739229 1" class="collision"/>
+      <geom mesh="right_wrist_collision_3" rgba="0.44112492991633545 0.729954646833143 0.8168214443622189 1" class="collision"/>
+      <geom mesh="right_wrist_collision_4" rgba="0.8112007002353566 0.9900793464158731 0.3622605696608381 1" class="collision"/>
+      <geom mesh="right_wrist_collision_5" rgba="0.045944664247150935 0.1583522959768504 0.9082324676932673 1" class="collision"/>
+      <geom mesh="right_wrist_collision_6" rgba="0.6506424567392978 0.14112335312509905 0.6422945294832539 1" class="collision"/>
+      <geom mesh="right_wrist_collision_7" rgba="0.2717258872622531 0.26725446719623214 0.6849204559383223 1" class="collision"/>
+      <geom mesh="right_wrist_collision_8" rgba="0.7906872647254785 0.9716633688154459 0.03990721762766947 1" class="collision"/>
+      <geom mesh="right_wrist_collision_9" rgba="0.027724715483930518 0.008294071011046733 0.5699801466510882 1" class="collision"/>
+    </body>
+  </worldbody>
+</mujoco>

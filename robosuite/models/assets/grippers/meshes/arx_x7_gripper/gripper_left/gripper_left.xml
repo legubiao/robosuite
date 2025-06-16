@@ -1,0 +1,39 @@
+<mujoco model="gripper_left">
+  <default>
+    <default class="visual">
+      <geom group="2" type="mesh" contype="0" conaffinity="0"/>
+    </default>
+    <default class="collision">
+      <geom group="3" type="mesh"/>
+    </default>
+  </default>
+  <asset>
+    <material name="grey_metal.001" specular="0.5" shininess="0.09604875199999999" rgba="0.081647 0.081647 0.081647 1.000000"/>
+    <mesh file="gripper_left.obj"/>
+    <mesh file="gripper_left_collision_0.obj"/>
+    <mesh file="gripper_left_collision_1.obj"/>
+    <mesh file="gripper_left_collision_2.obj"/>
+    <mesh file="gripper_left_collision_3.obj"/>
+    <mesh file="gripper_left_collision_4.obj"/>
+    <mesh file="gripper_left_collision_5.obj"/>
+    <mesh file="gripper_left_collision_6.obj"/>
+    <mesh file="gripper_left_collision_7.obj"/>
+    <mesh file="gripper_left_collision_8.obj"/>
+    <mesh file="gripper_left_collision_9.obj"/>
+  </asset>
+  <worldbody>
+    <body name="gripper_left">
+      <geom material="grey_metal.001" mesh="gripper_left" class="visual"/>
+      <geom mesh="gripper_left_collision_0" rgba="0.20556432454635065 0.6991014492539741 0.15793680115728181 1" class="collision"/>
+      <geom mesh="gripper_left_collision_1" rgba="0.9689449980555275 0.9316731470233709 0.4015759870176595 1" class="collision"/>
+      <geom mesh="gripper_left_collision_2" rgba="0.011224552482115402 0.7957387309391405 0.9516932093718008 1" class="collision"/>
+      <geom mesh="gripper_left_collision_3" rgba="0.29178013496556876 0.7400331581753277 0.803379196522531 1" class="collision"/>
+      <geom mesh="gripper_left_collision_4" rgba="0.3776178021814025 0.8482334664909847 0.18022140327043734 1" class="collision"/>
+      <geom mesh="gripper_left_collision_5" rgba="0.7517471286086157 0.741036047828934 0.2448500911801379 1" class="collision"/>
+      <geom mesh="gripper_left_collision_6" rgba="0.43271991371916607 0.8857301482867653 0.190772985934474 1" class="collision"/>
+      <geom mesh="gripper_left_collision_7" rgba="0.20509705198371886 0.8353012858587042 0.5062652121837846 1" class="collision"/>
+      <geom mesh="gripper_left_collision_8" rgba="0.17057068719835167 0.5638451579481717 0.5616675798807681 1" class="collision"/>
+      <geom mesh="gripper_left_collision_9" rgba="0.9625981874933388 0.7527055131628574 0.3815786155829447 1" class="collision"/>
+    </body>
+  </worldbody>
+</mujoco>

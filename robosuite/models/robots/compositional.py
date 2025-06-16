@@ -83,6 +83,58 @@ class ArxLift(ArxR5Dual):
             "table": lambda table_length: (-0.16 - table_length / 2, 0, 0),
         }
 
+class ArxLift2(ArxX5Dual):
+    @property
+    def default_base(self):
+        return "ArxLiftBase"
+
+    @property
+    def default_arms(self):
+        return {"right": "ArxX5Dual"}
+
+    @property
+    def init_qpos(self):
+        return np.array([0.0, 0.3, 0.7, -0.67, 0.0, 0.12,
+                         0.0, 0.3, 0.7, -0.67, 0.0, 0.12])
+
+    @property
+    def init_torso_qpos(self):
+        return np.array([0.5])
+
+    @property
+    def base_xpos_offset(self):
+        return {
+            "bins": (-0.6, -0.1, 0),
+            "empty": (-0.6, 0, 0),
+            "table": lambda table_length: (-0.16 - table_length / 2, 0, 0),
+        }
+
+class ArxX7S(ArxX7sArms):
+    @property
+    def default_base(self):
+        return "ArxX7sBase"
+
+    @property
+    def default_arms(self):
+        return {"right": "ArxX7sArms"}
+
+    @property
+    def init_qpos(self):
+        return np.zeros(14)
+
+    @property
+    def init_torso_qpos(self):
+        return np.array([0.5])
+
+    @property
+    def base_xpos_offset(self):
+        return {
+            "bins": (-0.6, -0.1, 0),
+            "empty": (-0.6, 0, 0),
+            "table": lambda table_length: (-0.3 - table_length / 2, 0, 0),
+        }
+
+
 
 class SpotWithArm(SpotArm):
     @property

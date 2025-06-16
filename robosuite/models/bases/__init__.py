@@ -16,7 +16,7 @@ from .floating_legged_base import FloatingLeggedBase
 from .null_base import NullBase
 from .spot_base import Spot, SpotFloating
 
-from .arx_lift_base import ArxLiftBase
+from .arx_base import ArxLiftBase, ArxX7sBase
 
 BASE_MAPPING = {
     "RethinkMount": RethinkMount,
@@ -29,7 +29,8 @@ BASE_MAPPING = {
     "Spot": Spot,
     "SpotFloating": SpotFloating,
     "NullBase": NullBase,
-    "ArxLiftBase": ArxLiftBase
+    "ArxLiftBase": ArxLiftBase,
+    "ArxX7sBase": ArxX7sBase,
 }
 
 ALL_BASES = BASE_MAPPING.keys()
