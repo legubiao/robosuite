@@ -2,6 +2,7 @@ from typing import Dict, List, Optional, Tuple
 
 import mujoco
 import numpy as np
+from pynput.keyboard import Key, Listener
 
 from robosuite.controllers.composite.composite_controller import WholeBody, WholeBodyIK
 from robosuite.devices import Device
@@ -53,6 +54,10 @@ class MJGUI(Device):
         self._enabled = False
 
         self.active_end_effector = active_end_effector
+        
+        # Initialize keyboard listener for spacebar toggle
+        self.listener = Listener(on_press=self.on_press, on_release=self.on_release)
+        self.listener.start()
 
     @staticmethod
     def _display_controls():
@@ -64,6 +69,9 @@ class MJGUI(Device):
             "Mujoco viewer UI mouse 'device'. Use the mouse to drag mocap bodies. We use the mocap's coordinates "
             "to output actions."
         )
+        print("Keyboard controls:")
+        print("  spacebar: toggle gripper (open/close)")
+        print("  q: reset simulation")
         print("")
 
     def start_control(self):
@@ -82,6 +90,37 @@ class MJGUI(Device):
             dict: A dictionary containing dpos, orn, unmodified orn, grasp, and reset
         """
         return dict()
+
+    def on_press(self, key):
+        """
+        Key handler for key presses.
+        Args:
+            key (str): key that was pressed
+        """
+        pass
+
+    def on_release(self, key):
+        """
+        Key handler for key releases.
+        Args:
+            key (str): key that was pressed
+        """
+        try:
+            # controls for grasping
+            if key == Key.space:
+                self.grasp_states[self.active_robot][self.active_arm_indices[self.active_robot]] = not self.grasp_states[self.active_robot][
+                    self.active_arm_indices[self.active_robot]
+                ]  # toggle gripper
+                print(f"Gripper {'closed' if self.grasp_states[self.active_robot][self.active_arm_indices[self.active_robot]] else 'open'}")
+
+            # user-commanded reset
+            elif key.char == "q":
+                self._reset_state = 1
+                self._enabled = False
+                self._reset_internal_state()
+
+        except AttributeError as e:
+            pass
 
     def _get_site_names(self) -> List[str]:
         """
@@ -180,7 +219,8 @@ class MJGUI(Device):
             # convert ori mat to axis angle
             axis_angle_target = transform_utils.quat2axisangle(transform_utils.mat2quat(target_ori_mat))
             action[target_name_prefix + "_abs"] = np.concatenate([target_pos, axis_angle_target])
-            grasp = 1  # hardcode grasp action for now
+            # Use grasp state instead of hardcoded value
+            grasp = 1 if self.grasp_states[self.active_robot][self.active_arm_indices[self.active_robot]] else -1
             action[f"{target_name_prefix}_gripper"] = np.array([grasp] * gripper_dof)
 
         # TODO: enable delta actions. Currently only abs actions.
