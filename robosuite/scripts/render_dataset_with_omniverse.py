@@ -1,6 +1,6 @@
 import argparse
 
-from omni.isaac.lab.app import AppLauncher
+from isaaclab.app import AppLauncher
 
 parser = argparse.ArgumentParser(description="Settings for SimulationApp")
 
@@ -114,7 +114,7 @@ import h5py
 import lxml.etree as ET
 import numpy as np
 import omni
-import omni.isaac.core.utils.stage as stage_utils
+import isaacsim.core.utils.stage as stage_utils
 import omni.kit.app
 import omni.replicator.core as rep
 import omni.timeline
@@ -348,22 +348,13 @@ class RobosuiteEnvInterface:
         model = self.env.sim.model._model
         data = self.env.sim.data._data
 
-        # Create a USD exporter instance with the current stage
-        stage = None
-        if args.online:
-            stage = stage_utils.get_current_stage()
-
         exp = exporter.USDExporter(
             model=model,
-            output_directory_name=self.output_directory,
+            output_directory=self.output_directory,
             camera_names=args.cameras,
-            online=args.online,
-            shareable=not args.online,
-            framerate=20,
-            stage=stage,
         )
         exp.update_scene(data=data, scene_option=scene_option)
-        exp.add_light(pos=[0, 0, 0], intensity=1500, light_type="dome", light_name="dome_1")
+        exp.add_light(pos=[0, 0, 0], intensity=1500, light_type="dome", obj_name="dome_1")
 
         # adds semantic information to objects in the scene
         if args.semantic_segmentation:
