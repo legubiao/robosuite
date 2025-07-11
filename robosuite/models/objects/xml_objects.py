@@ -297,3 +297,123 @@ class DoorObject(MujocoXMLObject):
         dic = super().important_sites
         dic.update({"handle": self.naming_prefix + "handle"})
         return dic
+
+
+class MicrowaveObject(MujocoXMLObject):
+    """
+    Microwave with door and rotating tray (used in Microwave task)
+
+    Args:
+        friction (3-tuple of float): friction parameters to override the ones specified in the XML
+        damping (float): damping parameter to override the ones specified in the XML
+        door_friction (float): friction parameter for door joint
+        tray_friction (float): friction parameter for tray joint
+    """
+
+    def __init__(self, name, friction=None, damping=None, door_friction=None, tray_friction=None):
+        xml_path = "objects/microwave/model.xml"
+        super().__init__(
+            xml_path_completion(xml_path), name=name, joints=None, obj_type="all", duplicate_collision_geoms=False
+        )
+
+        # Set relevant body names
+        self.door_body = self.naming_prefix + "door"
+        self.door_clear_body = self.naming_prefix + "door_Clear"
+        self.disc_body = self.naming_prefix + "Disc001"
+        self.frame_body = self.naming_prefix + "frame"
+        
+        # Set joint names
+        self.door_joint = self.naming_prefix + "microjoint"
+        self.tray_joint = self.naming_prefix + "Disc001_joint"
+        
+        # Set important geom names
+        self.start_button = self.naming_prefix + "start_button"
+        self.stop_button = self.naming_prefix + "stop_button"
+        self.door_handle = self.naming_prefix + "door_handle_main"
+        self.tray_geom = self.naming_prefix + "tray"
+        
+        # Set region names
+        self.interior_region = self.naming_prefix + "reg_int"
+        self.main_region = self.naming_prefix + "reg_main"
+        self.tray_region = self.naming_prefix + "reg_tray"
+
+        self.friction = friction
+        self.damping = damping
+        self.door_friction = door_friction
+        self.tray_friction = tray_friction
+        
+        # Apply friction and damping settings
+        if self.friction is not None:
+            self._set_global_friction(self.friction)
+        if self.damping is not None:
+            self._set_global_damping(self.damping)
+        if self.door_friction is not None:
+            self._set_joint_friction(self.door_joint, self.door_friction)
+        if self.tray_friction is not None:
+            self._set_joint_friction(self.tray_joint, self.tray_friction)
+
+    def _set_global_friction(self, friction):
+        """
+        Helper function to override global friction directly in the XML
+
+        Args:
+            friction (3-tuple of float): friction parameters to override the ones specified in the XML
+        """
+        # Find all geoms and set friction
+        geoms = find_elements(root=self.worldbody, tags="geom")
+        for geom in geoms:
+            geom.set("friction", array_to_string(np.array(friction)))
+
+    def _set_global_damping(self, damping):
+        """
+        Helper function to override global damping directly in the XML
+
+        Args:
+            damping (float): damping parameter to override the ones specified in the XML
+        """
+        # Set damping for both joints
+        self._set_joint_damping(self.door_joint, damping)
+        self._set_joint_damping(self.tray_joint, damping)
+
+    def _set_joint_friction(self, joint_name, friction):
+        """
+        Helper function to override joint friction directly in the XML
+
+        Args:
+            joint_name (str): name of the joint
+            friction (float): friction parameter to override the ones specified in the XML
+        """
+        joint = find_elements(root=self.worldbody, tags="joint", attribs={"name": joint_name}, return_first=True)
+        if joint is not None:
+            joint.set("frictionloss", array_to_string(np.array([friction])))
+
+    def _set_joint_damping(self, joint_name, damping):
+        """
+        Helper function to override joint damping directly in the XML
+
+        Args:
+            joint_name (str): name of the joint
+            damping (float): damping parameter to override the ones specified in the XML
+        """
+        joint = find_elements(root=self.worldbody, tags="joint", attribs={"name": joint_name}, return_first=True)
+        if joint is not None:
+            joint.set("damping", array_to_string(np.array([damping])))
+
+    @property
+    def important_sites(self):
+        """
+        Returns:
+            dict: In addition to any default sites for this object, also provides the following entries
+
+                :`'door_handle'`: Name of door handle location site
+                :`'interior'`: Name of interior region site
+                :`'tray'`: Name of tray region site
+        """
+        # Get dict from super call and add to it
+        dic = super().important_sites
+        dic.update({
+            "door_handle": self.naming_prefix + "door_handle",
+            "interior": self.naming_prefix + "interior",
+            "tray": self.naming_prefix + "tray"
+        })
+        return dic
