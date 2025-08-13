@@ -88,6 +88,8 @@ MUJOCO_NAMED_ATTRIBUTES = {
     "target",
     "prefix",
     "site",
+    "site1",
+    "site2",
 }
 
 IMAGE_CONVENTION_MAPPING = {

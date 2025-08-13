@@ -313,7 +313,7 @@ class MicrowaveObject(MujocoXMLObject):
     def __init__(self, name, friction=None, damping=None, door_friction=None, tray_friction=None):
         xml_path = "objects/microwave/model.xml"
         super().__init__(
-            xml_path_completion(xml_path), name=name, joints=None, obj_type="all", duplicate_collision_geoms=False
+            xml_path_completion(xml_path), name=name, joints=[dict(type="free", damping="0.0005")], obj_type="all", duplicate_collision_geoms=False
         )
 
         # Set relevant body names

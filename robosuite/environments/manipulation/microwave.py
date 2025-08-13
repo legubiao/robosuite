@@ -146,6 +146,8 @@ class Microwave(ManipulationEnv):
             gripper_types="default",
             base_types="default",
             initialization_noise="default",
+            table_full_size=(1.5, 2.0, 0.05),
+            table_friction=(1.0, 5e-3, 1e-4),
             use_camera_obs=True,
             use_object_obs=True,
             reward_scale=1.0,
@@ -170,8 +172,9 @@ class Microwave(ManipulationEnv):
             renderer_config=None,
             translucent_robot=False,
     ):
-        # settings for table top (hardcoded since it's not an essential part of the environment)
-        self.table_full_size = (1.5, 2.0, 0.05)
+        # settings for table top
+        self.table_full_size = table_full_size
+        self.table_friction = table_friction
         self.table_offset = (0, 0, 0.8)
 
         # reward configuration
@@ -274,6 +277,7 @@ class Microwave(ManipulationEnv):
         mujoco_arena = TableArena(
             table_full_size=self.table_full_size,
             table_offset=self.table_offset,
+            table_friction=self.table_friction,
         )
 
         # Arena always gets set to zero origin
@@ -302,13 +306,14 @@ class Microwave(ManipulationEnv):
             self.placement_initializer = UniformRandomSampler(
                 name="ObjectSampler",
                 mujoco_objects=self.microwave,
-                x_range=[0.07, 0.09],
-                y_range=[-0.01, 0.01],
+                x_range=[0.12, 0.15],
+                y_range=[-0.03, 0.03],
                 rotation=(-np.pi / 2.0 - 0.25, -np.pi / 2.0),
                 rotation_axis="z",
-                ensure_object_boundary_in_range=False,
+                ensure_object_boundary_in_range=True,
                 ensure_valid_placement=True,
                 reference_pos=self.table_offset,
+                z_offset=0.01,
             )
 
         # task includes arena, robot, and objects of interest
@@ -412,9 +417,24 @@ class Microwave(ManipulationEnv):
 
             # We know we're only setting a single object (the microwave), so specifically set its pose
             microwave_pos, microwave_quat, _ = object_placements[self.microwave.name]
-            microwave_body_id = self.sim.model.body_name2id(self.microwave.root_body)
-            self.sim.model.body_pos[microwave_body_id] = microwave_pos
-            self.sim.model.body_quat[microwave_body_id] = microwave_quat
+            
+            # Convert to numpy arrays and ensure they are 1D
+            pos_array = np.array(microwave_pos, dtype=np.float64).ravel()
+            quat_array = np.array(microwave_quat, dtype=np.float64).ravel()
+            joint_state = np.concatenate([pos_array, quat_array])
+            
+            # Find the free joint (should be the last one - Microwave_joint0)
+            free_joint_name = self.microwave.joints[2]  # Microwave_joint0
+            
+            # Get the joint address for the free joint
+            free_joint_addr = self.sim.model.get_joint_qpos_addr(free_joint_name)
+            
+            # Handle tuple address (start, end) or single int
+            if isinstance(free_joint_addr, tuple):
+                start_addr, end_addr = free_joint_addr
+                self.sim.data.qpos[start_addr:end_addr] = joint_state
+            else:
+                self.sim.data.qpos[free_joint_addr:free_joint_addr+7] = joint_state
 
     def _check_success(self):
         """
