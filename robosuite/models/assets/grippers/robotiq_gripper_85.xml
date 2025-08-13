@@ -21,8 +21,16 @@
   </asset>
 
   <equality>
-    <weld site1="right_inner_finger_fixed" site2="right_inner_knuckle_fixed"/>
-    <weld site1="left_inner_finger_fixed" site2="left_inner_knuckle_fixed"/>
+    <joint joint1="finger_joint" joint2="left_inner_finger_joint" polycoef="0.0 -1.0 0 0 0" solimp="0.95 0.99 0.001"
+           solref="0.005 1"/>
+    <joint joint1="finger_joint" joint2="left_inner_knuckle_joint" polycoef="0.0 1.0 0 0 0" solimp="0.95 0.99 0.001"
+           solref="0.005 1"/>
+    <joint joint1="finger_joint" joint2="right_outer_knuckle_joint" polycoef="0.0 1.0 0 0 0" solimp="0.95 0.99 0.001"
+           solref="0.005 1"/>
+    <joint joint1="finger_joint" joint2="right_inner_finger_joint" polycoef="0.0 -1.0 0 0 0" solimp="0.95 0.99 0.001"
+           solref="0.005 1"/>
+    <joint joint1="finger_joint" joint2="right_inner_knuckle_joint" polycoef="0.0 1.0 0 0 0" solimp="0.95 0.99 0.001"
+           solref="0.005 1"/>
   </equality>
 
   <contact>
@@ -31,8 +39,7 @@
   </contact>
 
   <actuator>
-    <position name='finger_1' ctrllimited="true" kp="1" kv="0.01" joint='finger_joint' ctrlrange='0 0.8'/>
-    <position name='finger_2' ctrllimited="true" kp="1" kv="0.01" joint='right_outer_knuckle_joint' ctrlrange='0 0.8'/>
+    <position name='finger_1' ctrllimited="true" kp="5" kv="0.01" joint='finger_joint' ctrlrange='0 0.8'/>
   </actuator>
 
   <worldbody>

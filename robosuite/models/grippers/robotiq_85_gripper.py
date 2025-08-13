@@ -23,7 +23,7 @@ class Robotiq85GripperBase(GripperModel):
 
     @property
     def init_qpos(self):
-        return np.array([0 ,0 ,0, 0, 0, 0])
+        return np.array([0])
 
     @property
     def _important_geoms(self):
@@ -63,7 +63,7 @@ class Robotiq85Gripper(Robotiq85GripperBase):
         """
         assert len(action) == 1
         self.current_action = np.clip(
-            self.current_action * np.array([1.0, 1.0]) + self.speed * np.sign(action), -1.0, 1.0
+            self.current_action * np.array([1.0]) + self.speed * np.sign(action), -1.0, 1.0
         )
         return self.current_action
 
