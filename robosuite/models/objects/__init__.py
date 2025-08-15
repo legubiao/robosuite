@@ -18,6 +18,7 @@ from .xml_objects import (
     PlateWithHoleObject,
     DoorObject,
     MicrowaveObject,
+    Shelf8Object,
 )
 from .primitive import *
 from .composite import *

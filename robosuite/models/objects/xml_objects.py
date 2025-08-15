@@ -417,3 +417,36 @@ class MicrowaveObject(MujocoXMLObject):
             "tray": self.naming_prefix + "tray"
         })
         return dic
+
+
+class Shelf8Object(MujocoXMLObject):
+    """
+    Shelf8 object - a multi-shelf storage unit
+    
+    This object represents a shelf8 storage unit with multiple collision meshes
+    for accurate physics simulation and a visual mesh for rendering.
+    """
+    
+    def __init__(self, name):
+        super().__init__(
+            xml_path_completion("objects/shelf8/shelf8.xml"),
+            name=name,
+            joints="default",  # Add free joint to make it movable
+            obj_type="all",
+            duplicate_collision_geoms=False,  # Keep original collision geom properties
+        )
+    
+    @property
+    def important_sites(self):
+        """
+        Returns:
+            dict: In addition to any default sites for this object, also provides the following entries
+                
+                :`'frame'`: Name of the main shelf frame
+        """
+        # Get dict from super call and add to it
+        dic = super().important_sites
+        dic.update({
+            "frame": self.naming_prefix + "frame"
+        })
+        return dic

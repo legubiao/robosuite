@@ -1,0 +1,66 @@
+<mujoco model="shelf8">
+	<default>
+		<default class="visual">
+			<geom conaffinity="0" contype="0" group="1" type="mesh"/>
+		</default>
+		<default class="collision">
+			<geom group="0" type="mesh"/>
+		</default>
+	</default>
+	<asset>
+		<texture type="2d" name="shelf8_0" file="shelf8_0.png"/>
+		<material name="shelf8_0" texture="shelf8_0" specular="0.0" shininess="0.5"/>
+		<mesh name="shelf8_main" file="shelf8.obj"/>
+		<mesh name="shelf8_collision_0" file="shelf8_collision_0.obj"/>
+		<mesh name="shelf8_collision_1" file="shelf8_collision_1.obj"/>
+		<mesh name="shelf8_collision_2" file="shelf8_collision_2.obj"/>
+		<mesh name="shelf8_collision_3" file="shelf8_collision_3.obj"/>
+		<mesh name="shelf8_collision_4" file="shelf8_collision_4.obj"/>
+		<mesh name="shelf8_collision_5" file="shelf8_collision_5.obj"/>
+		<mesh name="shelf8_collision_6" file="shelf8_collision_6.obj"/>
+		<mesh name="shelf8_collision_7" file="shelf8_collision_7.obj"/>
+		<mesh name="shelf8_collision_8" file="shelf8_collision_8.obj"/>
+		<mesh name="shelf8_collision_9" file="shelf8_collision_9.obj"/>
+		<mesh name="shelf8_collision_10" file="shelf8_collision_10.obj"/>
+		<mesh name="shelf8_collision_11" file="shelf8_collision_11.obj"/>
+		<mesh name="shelf8_collision_12" file="shelf8_collision_12.obj"/>
+	</asset>
+	<worldbody>
+		<body>
+			<body name="object">
+				<body name="frame" euler="1.57 0 0">
+					<geom material="shelf8_0" mesh="shelf8_main" class="visual" density="100"/>
+					<geom mesh="shelf8_collision_0" rgba="0.2439093728839009 0.022053138563690955 0.7638103761275158 1"
+					      class="collision"/>
+					<geom mesh="shelf8_collision_1" rgba="0.18455727769715347 0.9190156836033465 0.16047109347004218 1"
+					      class="collision"/>
+					<geom mesh="shelf8_collision_2" rgba="0.6087040275449177 0.6867896523576456 0.9928334428004563 1"
+					      class="collision"/>
+					<geom mesh="shelf8_collision_3" rgba="0.43044240014294355 0.6458696815315087 0.4511469124774149 1"
+					      class="collision"/>
+					<geom mesh="shelf8_collision_4" rgba="0.7382731573994441 0.7528837870910516 0.4280898727317093 1"
+					      class="collision"/>
+					<geom mesh="shelf8_collision_5" rgba="0.5481503559553023 0.5805978189897519 0.5458570855177399 1"
+					      class="collision"/>
+					<geom mesh="shelf8_collision_6" rgba="0.972061577393677 0.31504117389837705 0.17810519493518961 1"
+					      class="collision"/>
+					<geom mesh="shelf8_collision_7" rgba="0.6662199737066045 0.6272085337410913 0.9549351217624558 1"
+					      class="collision"/>
+					<geom mesh="shelf8_collision_8" rgba="0.1771911503030248 0.22294612115405432 0.30634019295556625 1"
+					      class="collision"/>
+					<geom mesh="shelf8_collision_9" rgba="0.8850344371048501 0.7132630985135883 0.06453949671602321 1"
+					      class="collision"/>
+					<geom mesh="shelf8_collision_10" rgba="0.9970557928591061 0.10629875079609807 0.6112364056002269 1"
+					      class="collision"/>
+					<geom mesh="shelf8_collision_11" rgba="0.5848543848025285 0.07972741197186106 0.8114718061992399 1"
+					      class="collision"/>
+					<geom mesh="shelf8_collision_12" rgba="0.6891890113067792 0.9056226889476561 0.7854699305289696 1"
+					      class="collision"/>
+				</body>
+			</body>
+			<site name="bottom_site" pos="0 0 -0.3" rgba="0 0 0 0" size="0.005"/>
+			<site name="top_site" pos="0 0 0.3" rgba="0 0 0 0" size="0.005"/>
+			<site name="horizontal_radius_site" pos="0.3 0 0" rgba="0 0 0 0" size="0.1"/>
+		</body>
+	</worldbody>
+</mujoco>

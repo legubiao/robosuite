@@ -15,6 +15,7 @@ from robosuite.models.objects import (
     CerealVisualObject,
     MilkObject,
     MilkVisualObject,
+    Shelf8Object,
 )
 from robosuite.models.tasks import ManipulationTask
 from robosuite.utils.observables import Observable, sensor
@@ -181,7 +182,7 @@ class PickPlaceTable(ManipulationEnv):
         gripper_types="default",
         base_types="default",
         initialization_noise="default",
-        table_full_size=(0.8, 0.8, 0.05),
+        table_full_size=(1.0, 1.5, 0.05),
         table_friction=(1, 0.005, 0.0001),
         table_offset=(0, 0, 0.8),
         z_offset=0.0,
@@ -331,8 +332,12 @@ class PickPlaceTable(ManipulationEnv):
 
         # filter out objects that are already in the correct table positions
         active_objs = []
-        for i, obj in enumerate(self.objects):
-            if self.objects_on_table[i]:
+        for obj in self.objects:
+            # Skip shelf8 object since it's static
+            if obj.name == "shelf8":
+                continue
+            # Use the mapping to get the correct index in objects_on_table
+            if self.objects_on_table[self.obj_to_table_index[obj.name]]:
                 continue
             active_objs.append(obj)
 
@@ -433,13 +438,39 @@ class PickPlaceTable(ManipulationEnv):
         table_x_half = self.model.mujoco_arena.table_full_size[0] / 2 - 0.05
         table_y_half = self.model.mujoco_arena.table_full_size[1] / 2 - 0.05
 
-        # each object should just be sampled in the bounds of the table (with some tolerance)
+        # Place shelf8 on the left side of the table (fixed position but movable object)
+        # Position shelf8 so its surface is level with the table surface
+        shelf8_x = table_x_half - 0.4  # Slightly to the left of table edge
+        shelf8_y = -table_y_half + 0.3  # Center of table width
+        # Adjust z position so shelf8 surface aligns with table surface
+        # shelf8 has height of 0.6 (from bottom_site to top_site), so center it at table height
+        shelf8_z = self.table_top_pos[2]  # Center shelf8 at table height
+        
+        # Add shelf8 placement sampler (fixed position)
+        self.placement_initializer.append_sampler(
+            sampler=UniformRandomSampler(
+                name="Shelf8Sampler",
+                mujoco_objects=[self.shelf8],
+                x_range=[shelf8_x, shelf8_x],
+                y_range=[shelf8_y, shelf8_y],
+                rotation=0.0,
+                rotation_axis="z",
+                ensure_object_boundary_in_range=False,
+                ensure_valid_placement=False,
+                reference_pos=self.table_top_pos,
+                z_offset=shelf8_z - self.table_top_pos[2],
+                rng=self.rng,
+            )
+        )
+
+        # other objects should be sampled in the bounds of the table (with some tolerance)
+        other_objects = [obj for obj in self.objects if obj.name != "shelf8"]
         self.placement_initializer.append_sampler(
             sampler=UniformRandomSampler(
                 name="CollisionObjectSampler",
-                mujoco_objects=self.objects,
-                x_range=[-table_x_half, table_x_half],
-                y_range=[-table_y_half, table_y_half],
+                mujoco_objects=other_objects,
+                x_range=[-table_x_half, table_x_half],  # Full length of table (front-back)
+                y_range=[0, table_y_half],  # Only right side of table (y > 0)
                 rotation=self.z_rotation,
                 rotation_axis="z",
                 ensure_object_boundary_in_range=True,
@@ -494,6 +525,12 @@ class PickPlaceTable(ManipulationEnv):
         Function that can be overriden by subclasses to load different objects.
         """
         self.objects = []
+        
+        # Add shelf8 object on the left side of the table
+        self.shelf8 = Shelf8Object(name="shelf8")
+        self.objects.append(self.shelf8)
+        
+        # Add the original objects
         for obj_cls, obj_name in zip(
             (MilkObject, BreadObject, CerealObject, CanObject),
             self.obj_names,
@@ -521,6 +558,13 @@ class PickPlaceTable(ManipulationEnv):
         # Arena always gets set to zero origin
         mujoco_arena.set_origin([0, 0, 0])
 
+        # Modify default agentview camera to better observe shelf8 and pick and place task
+        mujoco_arena.set_camera(
+            camera_name="agentview",
+            pos=[1.0, 0, 2.0],  # Higher position than original (was 1.35), centered view
+            quat=[0.653, 0.271, 0.271, 0.653]  # Keep original orientation
+        )
+
         # store some arena attributes
         self.table_size = mujoco_arena.table_full_size
         self.table_top_pos = mujoco_arena.table_top_abs
@@ -530,18 +574,15 @@ class PickPlaceTable(ManipulationEnv):
         table_half_size = self.table_size / 2.0
         
         for i in range(4):
-            # Define target placement areas on the table
-            # Divide table into left and right sides
-            if i < 2:  # Milk and Bread - left side
-                target_x = self.table_top_pos[0] - table_half_size[0] / 2.0
-            else:  # Cereal and Can - right side
-                target_x = self.table_top_pos[0] + table_half_size[0] / 2.0
+            # Define target placement areas on the right side of the table
+            # All objects now go on the right side (y > 0)
+            target_x = self.table_top_pos[0]  # Center of table length (front-back)
             
             # Alternate between top and bottom for each side
-            if i % 2 == 0:  # Even indices (0, 2) - top
+            if i % 2 == 0:  # Even indices (0, 2) - top right
                 target_y = self.table_top_pos[1] + table_half_size[1] / 2.0
-            else:  # Odd indices (1, 3) - bottom
-                target_y = self.table_top_pos[1] - table_half_size[1] / 2.0
+            else:  # Odd indices (1, 3) - bottom right
+                target_y = self.table_top_pos[1] + table_half_size[1] / 4.0
             
             # Set target position on table surface
             # table_top_pos[2] is the table top surface, but we want the center of the table
@@ -581,7 +622,13 @@ class PickPlaceTable(ManipulationEnv):
             self.obj_geom_id[obj.name] = [self.sim.model.geom_name2id(g) for g in obj.contact_geoms]
 
         # keep track of which objects are placed on the table
+        # Include shelf8 in tracking since it's now movable, but exclude it from reward calculations
         self.objects_on_table = np.zeros(len(self.objects))
+        
+        # Create a mapping from object names to their index in objects_on_table
+        self.obj_to_table_index = {}
+        for i, obj in enumerate(self.objects):
+            self.obj_to_table_index[obj.name] = i
 
     def _setup_observables(self):
         """
@@ -612,12 +659,20 @@ class PickPlaceTable(ManipulationEnv):
 
             for i, obj in enumerate(self.objects):
                 # Create object sensors
-                using_obj = self.single_object_mode == 0 or self.object_id == i
+                # For shelf8, always enable sensors but mark as not participating in rewards
+                if obj.name == "shelf8":
+                    using_obj = True  # Always enable sensors for shelf8
+                else:
+                    # For movable objects, use single_object_mode logic
+                    using_obj = self.single_object_mode == 0 or self.object_id == i
+                
                 obj_sensors, obj_sensor_names = self._create_obj_sensors(obj_name=obj.name, modality=modality)
                 sensors += obj_sensors
                 names += obj_sensor_names
                 enableds += [using_obj] * len(obj_sensor_names)
                 actives += [using_obj] * len(obj_sensor_names)
+                
+                # Track all objects in object_id_to_sensors for consistency
                 self.object_id_to_sensors[i] = obj_sensor_names
 
             if self.single_object_mode == 1:
@@ -702,8 +757,14 @@ class PickPlaceTable(ManipulationEnv):
                     self.sim.model.body_pos[self.obj_body_id[obj.name]] = obj_pos
                     self.sim.model.body_quat[self.obj_body_id[obj.name]] = obj_quat
                 else:
-                    # Set the collision object joints
-                    self.sim.data.set_joint_qpos(obj.joints[0], np.concatenate([np.array(obj_pos), np.array(obj_quat)]))
+                    # Check if object has joints (movable objects) or not (static objects like shelf8)
+                    if hasattr(obj, 'joints') and obj.joints:
+                        # Set the collision object joints for movable objects
+                        self.sim.data.set_joint_qpos(obj.joints[0], np.concatenate([np.array(obj_pos), np.array(obj_quat)]))
+                    else:
+                        # For static objects without joints, set body position directly
+                        self.sim.model.body_pos[self.obj_body_id[obj.name]] = obj_pos
+                        self.sim.model.body_quat[self.obj_body_id[obj.name]] = obj_quat
 
         # Set the bins to the desired position
         # Note: This is no longer needed since we're using TableArena instead of BinsArena
@@ -711,6 +772,10 @@ class PickPlaceTable(ManipulationEnv):
 
         # Move objects out of the scene depending on the mode
         obj_names = {obj.name for obj in self.objects}
+        # Remove shelf8 from objects that can be moved/cleared since it has fixed position
+        if "shelf8" in obj_names:
+            obj_names.remove("shelf8")
+            
         if self.single_object_mode == 1:
             self.obj_to_use = self.rng.choice(list(obj_names))
             for obj_type, i in self.object_to_id.items():
@@ -739,7 +804,10 @@ class PickPlaceTable(ManipulationEnv):
             bool: True if all objects are placed correctly
         """
         # remember objects that are in the correct bins
-        for i, obj in enumerate(self.objects):
+        # Exclude shelf8 from success checking since it's not part of the task
+        movable_objects = [obj for obj in self.objects if obj.name != "shelf8"]
+        
+        for i, obj in enumerate(movable_objects):
             obj_str = obj.name
             obj_pos = self.sim.data.body_xpos[self.obj_body_id[obj_str]]
             dist = min(
@@ -749,14 +817,19 @@ class PickPlaceTable(ManipulationEnv):
                 ]
             )
             r_reach = 1 - np.tanh(10.0 * dist)
-            self.objects_on_table[i] = int((not self.not_on_table(obj_pos, i)) and r_reach < 0.6)
+            # Use the mapping to get the correct index in objects_on_table
+            table_index = self.obj_to_table_index[obj_str]
+            # Only check objects that have target placements (exclude shelf8)
+            if obj_str.lower() in self.object_to_id:
+                obj_id = self.object_to_id[obj_str.lower()]
+                self.objects_on_table[table_index] = int((not self.not_on_table(obj_pos, obj_id)) and r_reach < 0.6)
 
         # returns True if a single object is in the correct table position
         if self.single_object_mode in {1, 2}:
             return np.sum(self.objects_on_table) > 0
 
         # returns True if all objects are in correct table positions
-        return np.sum(self.objects_on_table) == len(self.objects)
+        return np.sum(self.objects_on_table) == len(movable_objects)
 
     def visualize(self, vis_settings):
         """
@@ -774,7 +847,8 @@ class PickPlaceTable(ManipulationEnv):
         if vis_settings["grippers"]:
             # if the robot has multiple arms color each arm independently based on its closest object
             for arm in self.robots[0].arms:
-                # find closest object
+                # find closest object (exclude shelf8 since it's not part of the task)
+                movable_objects = [obj for obj in self.objects if obj.name != "shelf8"]
                 dists = [
                     self._gripper_to_target(
                         gripper=self.robots[0].gripper[arm],
@@ -782,15 +856,16 @@ class PickPlaceTable(ManipulationEnv):
                         target_type="body",
                         return_distance=True,
                     )
-                    for obj in self.objects
+                    for obj in movable_objects
                 ]
-                closest_obj_id = np.argmin(dists)
-                # Visualize the distance to this target
-                self._visualize_gripper_to_target(
-                    gripper=self.robots[0].gripper[arm],
-                    target=self.objects[closest_obj_id].root_body,
-                    target_type="body",
-                )
+                if dists:  # Only proceed if there are movable objects
+                    closest_obj_id = np.argmin(dists)
+                    # Visualize the distance to this target
+                    self._visualize_gripper_to_target(
+                        gripper=self.robots[0].gripper[arm],
+                        target=movable_objects[closest_obj_id].root_body,
+                        target_type="body",
+                    )
 
 
 class PickPlaceSingle(PickPlaceTable):
